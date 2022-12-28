@@ -5,7 +5,7 @@ import churchillImage from './images/churchill.jpg';
 import ViewportDiv from './ViewportDiv';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ItemTypes } from './Constants';
 
 function App() {
@@ -42,18 +42,29 @@ function App() {
     }
   },[nextId, sprites]);
 
-  useEffect(()=>{
-    console.log(sprites);
-  }, [sprites])
+  const handlePaletteDrop = useCallback(({id, boardX, boardY, type})=>{
+    console.log(id);
+    console.log(sprites.gameBoard);
+    console.log(sprites.gameBoard.filter((sprite)=>sprite.id!==id));
+    if (type===ItemTypes.SPRITE) {
+      setSprites({
+        palette: sprites.palette,
+        gameBoard: sprites.gameBoard.filter((sprite)=>sprite.id!==id)
+      });
+    }
+  },[sprites]);
 
   return (
     <DndProvider backend={HTML5Backend}>
       <div style={{display: "flex"}}>
         <ViewportDiv viewportHeight={80} viewportWidth={10}>
-          <Board spriteType={ItemTypes.PALETTE} sprites={sprites.palette} unitsWidth={3} unitsHeight={24}/>
+          <Board spriteType={ItemTypes.PALETTE} sprites={sprites.palette} 
+          handleBoardDrop={handlePaletteDrop}
+          unitsWidth={3} unitsHeight={24}/>
         </ViewportDiv>
         <ViewportDiv viewportHeight={80} viewportWidth={80}>
-            <Board spriteType={ItemTypes.SPRITE} sprites={sprites.gameBoard} handleBoardDrop={handleBoardDrop} />
+          <Board spriteType={ItemTypes.SPRITE} sprites={sprites.gameBoard} 
+          handleBoardDrop={handleBoardDrop} />
         </ViewportDiv>
       </div>
     </DndProvider>

@@ -10,7 +10,7 @@ export default function Sprite({id, image, altText="", type}) {
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging()
     })
-  }))
+  }),[id, type])
 
   if (image) return (
     <div ref={drag}>
