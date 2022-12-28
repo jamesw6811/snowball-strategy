@@ -1,22 +1,19 @@
 
 import './App.css';
 import Board from './Board';
-import churchillImage from './images/churchill.jpg';
 import ViewportDiv from './ViewportDiv';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useCallback, useState } from 'react';
-import { ItemTypes } from './Constants';
+import { GAMEPALETTE, ItemTypes } from './Constants';
+
+const initialSprites = {palette:[], gameBoard:[]};
+GAMEPALETTE.forEach((sprite, index)=>{
+  initialSprites.palette.push({id:index, x:1, y:index*3+2, image:sprite.image, name:sprite.name});
+});
 
 function App() {
-  const [sprites, setSprites] = useState({gameBoard:[{id:0, x:5, y:12, image:churchillImage, name:"Winston Churchill"}, 
-      {id:1, x:15, y:3, image:churchillImage, name:"Winston Churchill"}, 
-      {id:2, x:0, y:0, image:churchillImage, name:"Winston Churchill"}],
-    palette:[{x:1, y:1, image:churchillImage, name:"Winston Churchill"}, 
-      {id:3, x:2, y:1, image:churchillImage, name:"Winston Churchill"}, 
-      {id:4, x:1, y:2, image:churchillImage, name:"Winston Churchill"}, 
-      {id:5, x:2, y:2, image:churchillImage, name:"Winston Churchill"}]});
-  
+  const [sprites, setSprites] = useState(initialSprites);
   const [nextId, setNextId] = useState(6);
 
   const handleBoardDrop = useCallback(({id, boardX, boardY, type})=>{
@@ -60,7 +57,7 @@ function App() {
         <ViewportDiv viewportHeight={80} viewportWidth={10}>
           <Board spriteType={ItemTypes.PALETTE} sprites={sprites.palette} 
           handleBoardDrop={handlePaletteDrop}
-          unitsWidth={3} unitsHeight={24}/>
+          unitsWidth={2} unitsHeight={24}/>
         </ViewportDiv>
         <ViewportDiv viewportHeight={80} viewportWidth={80}>
           <Board spriteType={ItemTypes.SPRITE} sprites={sprites.gameBoard} 

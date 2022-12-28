@@ -14,7 +14,7 @@ export default function Sprite({id, image, altText="", type}) {
 
   if (image) return (
     <div ref={drag}>
-      <ViewportDiv viewportHeight={5} viewportWidth={5}>
+      <ViewportDiv viewportHeight={9} viewportWidth={9}>
         <img src={image} alt={altText} style={{position:"absolute", 
           height:"100%", 
           width:"100%", 
