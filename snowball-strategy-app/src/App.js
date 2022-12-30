@@ -1,6 +1,8 @@
 
 import './App.css';
 import Board from './Board';
+import Snowfall from 'react-snowfall';
+import snowBackground from './images/snowBackground.png';
 import ViewportDiv from './ViewportDiv';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -35,6 +37,10 @@ function App() {
   const [simulationResult, setSimulationResult] = useState();
   const [simulating, setSimulating] = useState(false);
   const [nextId, setNextId] = useState(6);
+
+  const handleGameSpriteClick = useCallback((sprite)=>{
+    setSelectedSprite(sprite);
+  },[setSelectedSprite]);
 
   const handleBoardDrop = useCallback(({id, boardX, boardY, type})=>{
     if (type===ItemTypes.SPRITE) {
@@ -169,7 +175,7 @@ function App() {
         prompt += createLocationPrompt(sprite, selectedSprite) + " ";
       }
     });
-    prompt += "You are " + selectedSprite.name + ". Explain your strategy to win the snowball fight step by step in the style of " + selectedSprite.name + ".";
+    prompt += "You are " + selectedSprite.name + ". Introduce yourself. Then explain your strategy to win the snowball fight step by step in the style of " + selectedSprite.name + ".";
     console.log(prompt);
     return prompt;
   },[createLocationPrompt, selectedSprite, sprites]);
@@ -182,11 +188,11 @@ function App() {
         .then((result) => {
           const text = result.data.text;
           console.log(text);
-          setSimulationResult(text);
+          setSimulationResult("FROM: " + selectedSprite.name +"\nRE: snowball fight strategy\n" + text + "\n\n\n   - " + selectedSprite.name);
           setSimulating(false);
         });
       }
-  },[readyToSimulate, createSimulationPrompt])
+  },[readyToSimulate, createSimulationPrompt, selectedSprite])
 
   const resetResult = useCallback(()=>{
     setSimulationResult(null);
@@ -194,34 +200,34 @@ function App() {
     
   return (
     <DndProvider backend={HTML5Backend}>
-      <div style={{display: "flex"}}>
-        <ViewportDiv viewportHeight={80} viewportWidth={10}>
+      <div style={{display: "flex", justifyContent: "center", marginBottom: "1vh", marginTop: "1vh"}}>
+        <button style={{height:"5vh", width:"40vh", borderRadius:"1vh",
+        background:readyToSimulate()?"#09E85E":"#817E9F",
+        }} onClick={simulateButtonClick}>
+          { (simulating && <>Simulating...</>) ||
+          (!hasEnoughSpritesToSimulate() && <>Drag things into the snowball arena</>) ||
+          (hasEnoughSpritesToSimulate() && !selectedSprite && <>Choose someone by dragging</>) ||
+          (readyToSimulate() && <>View {selectedSprite.name}'s plan</>)}
+        </button>
+      </div>
+      <div style={{display: "flex", justifyContent: "center"}}>
+        <ViewportDiv viewportHeight={90} viewportWidth={10}>
           <Board spriteType={ItemTypes.PALETTE} sprites={sprites.palette} 
           handleBoardDrop={handlePaletteDrop}
-          unitsWidth={2} unitsHeight={24}/>
+          unitsWidth={2} unitsHeight={27}/>
         </ViewportDiv>
-        <ViewportDiv viewportHeight={80} viewportWidth={80}>
-          <Board spriteType={ItemTypes.SPRITE} sprites={sprites.gameBoard} 
-          handleBoardDrop={handleBoardDrop} />
+        <ViewportDiv viewportHeight={90} viewportWidth={5} />
+        <ViewportDiv viewportHeight={90} viewportWidth={85}>
+          <Board spriteType={ItemTypes.SPRITE} sprites={sprites.gameBoard} handleSpriteClick={handleGameSpriteClick}
+          handleBoardDrop={handleBoardDrop} backgroundImage={snowBackground} contain={false}/>
         </ViewportDiv>
-        <div style={{position:"absolute", top:"90vh", left:"50vh", 
-          height:"5vh", width:"20vh"
-          }}>
-          <button style={{position:"absolute", top:"-50%", left:"-50%",
-          background:readyToSimulate()?"green":"grey",
-          }} onClick={simulateButtonClick}>
-            { (simulating && <>Simulating...</>) ||
-            (!hasEnoughSpritesToSimulate() && <>Add more things</>) ||
-            (hasEnoughSpritesToSimulate() && !selectedSprite && <>Move someone to simulate</>) ||
-            (readyToSimulate() && <>Simulate {selectedSprite.name}'s strategy</>)}
-          </button>
-        </div>
-        {!!simulationResult &&
+      </div>
+      {!!simulationResult &&
           <ResultsDisplay handleClick={resetResult}>
             {simulationResult}
           </ResultsDisplay>
-        }
-      </div>
+      }
+      {simulating && <Snowfall />}
     </DndProvider>
   );
 }

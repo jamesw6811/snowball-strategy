@@ -1,12 +1,22 @@
 import React from "react";
+import ViewportDiv from "./ViewportDiv";
 
 export default function ResultsDisplay({children, handleClick}){
-    return <div style={{position:"absolute", top:"50vh", left:"50vh", 
-    height:"70vh", width:"90vh"}}><div 
-        style={{position:"absolute", width:"100%", height:"100%", top:"-50%", left:"-50%", 
-        background:"lightgreen", opacity:"75%", whiteSpace: "pre-wrap"}} onClick={handleClick}>
-        {children}
+    return <div 
+        style={{width:"100%", height:"100%", 
+        position: "fixed",
+        top: 0,
+        left: 0,
+        display: "flex",
+        justifyContent: "center"
+        }} onClick={handleClick}>
+        <ViewportDiv viewportHeight={100} viewportWidth={100}>
+            <div style={{width:"100%", height:"100%", background:"white", opacity:"95%", whiteSpace: "pre-wrap",
+            display: "flex", alignItems: "center", padding: "5vh"}}>
+                {children}
+            </div>
+        </ViewportDiv>
     </div>
-    </div>
+    
 }
 

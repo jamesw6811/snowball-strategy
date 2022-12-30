@@ -13,9 +13,9 @@ export const ItemTypes = {
 
 export const GAMEPALETTE = [
   {image:churchillImage, name:"Winston Churchill"}, 
-  {image:meankidImage, name:"A mean kid"}, 
-  {image:mittensImage, name:"A pair of mittens"}, 
+  {image:meankidImage, name:"a mean kid"}, 
+  {image:mittensImage, name:"a pair of mittens"}, 
   {image:shakespeareImage, name:"William Shakespeare"}, 
-  {image:snowballsImage, name:"A pile of snowballs"}, 
+  {image:snowballsImage, name:"a pile of snowballs"}, 
   {image:zeusImage, name:"Zeus"}
 ];
