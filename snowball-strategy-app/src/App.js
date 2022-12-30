@@ -52,11 +52,12 @@ function App() {
     } else if (type===ItemTypes.PALETTE) {
       const paletteSprite = sprites.palette.find((sprite)=>sprite.id===id);
       if (paletteSprite){
+        const newSprite = {...paletteSprite, x:boardX, y:boardY, id:nextId};
         setSprites({
           palette:sprites.palette,
-          gameBoard: [...sprites.gameBoard, {...paletteSprite, x:boardX, y:boardY, id:nextId}]
+          gameBoard: [...sprites.gameBoard, newSprite]
         });
-        setSelectedSprite(paletteSprite);
+        setSelectedSprite(newSprite);
         setNextId(nextId+1);
       } else {
         console.error("Palette id not found");
@@ -168,7 +169,7 @@ function App() {
         prompt += createLocationPrompt(sprite, selectedSprite) + " ";
       }
     });
-    prompt += "You are " + selectedSprite.name + ". Pick your team by who is the shortest distance away. Who is on your team?  Then, explain your strategy to win the snowball fight step by step. Use the style of " + selectedSprite.name + ".";
+    prompt += "You are " + selectedSprite.name + ". Explain your strategy to win the snowball fight step by step in the style of " + selectedSprite.name + ".";
     console.log(prompt);
     return prompt;
   },[createLocationPrompt, selectedSprite, sprites]);
