@@ -1,0 +1,29 @@
+[debug] [2022-12-30T06:55:44.130Z] ----------------------------------------------------------------------
+[debug] [2022-12-30T06:55:44.132Z] Command:       /usr/local/bin/node /usr/local/share/npm-global/bin/firebase deploy
+[debug] [2022-12-30T06:55:44.132Z] CLI Version:   11.19.0
+[debug] [2022-12-30T06:55:44.133Z] Platform:      linux
+[debug] [2022-12-30T06:55:44.133Z] Node Version:  v18.12.1
+[debug] [2022-12-30T06:55:44.133Z] Time:          Fri Dec 30 2022 06:55:44 GMT+0000 (Coordinated Universal Time)
+[debug] [2022-12-30T06:55:44.133Z] Env Overrides: GITHUB_API_URL
+[debug] [2022-12-30T06:55:44.134Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-12-30T06:55:44.202Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-12-30T06:55:44.203Z] > authorizing via signed-in user (jamesw6811@gmail.com)
+[debug] [2022-12-30T06:55:44.203Z] [iam] checking project snowball-strategy for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2022-12-30T06:55:44.205Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/snowball-strategy:testIamPermissions [none]
+[debug] [2022-12-30T06:55:44.206Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/snowball-strategy:testIamPermissions x-goog-quota-user=projects/snowball-strategy
+[debug] [2022-12-30T06:55:44.206Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/snowball-strategy:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2022-12-30T06:55:44.382Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/snowball-strategy:testIamPermissions 200
+[debug] [2022-12-30T06:55:44.383Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/snowball-strategy:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2022-12-30T06:55:44.384Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/snowball-strategy/serviceAccounts/snowball-strategy@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2022-12-30T06:55:44.384Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/snowball-strategy/serviceAccounts/snowball-strategy@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2022-12-30T06:55:44.443Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/snowball-strategy/serviceAccounts/snowball-strategy@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2022-12-30T06:55:44.443Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/snowball-strategy/serviceAccounts/snowball-strategy@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2022-12-30T06:55:44.444Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/snowball-strategy [none]
+[debug] [2022-12-30T06:55:44.694Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/snowball-strategy 200
+[debug] [2022-12-30T06:55:44.695Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/snowball-strategy {"projectId":"snowball-strategy","projectNumber":"963604328150","displayName":"snowball-strategy","name":"projects/snowball-strategy","resources":{"hostingSite":"snowball-strategy"},"state":"ACTIVE","etag":"1_2611ac11-1374-4b70-89b9-dd89f94b0345"}
+[info] 
+[info] === Deploying to 'snowball-strategy'...
+[info] 
+[info] i  deploying functions, hosting 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
