@@ -10,22 +10,8 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useCallback, useState } from 'react';
 import { GAMEPALETTE, ItemTypes } from './Constants';
 import ResultsDisplay from './ResultsDisplay';
+import { runGPTCompletion } from './cloudFunctions';
 
-import { initializeApp } from 'firebase/app';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY_SNOWBALL,
-  authDomain: "snowball-strategy.firebaseapp.com",
-  projectId: "snowball-strategy",
-  storageBucket: "snowball-strategy.appspot.com",
-  messagingSenderId: "963604328150",
-  appId: "1:963604328150:web:db6eef1145ff3dc306e377",
-  measurementId: "G-JXX5K651FV"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const functions = getFunctions(app);
 
 const initialSprites = {palette:[], gameBoard:[]};
 GAMEPALETTE.forEach((sprite, index)=>{
@@ -184,11 +170,7 @@ function App() {
   const simulateButtonClick = useCallback(()=>{
     if (readyToSimulate()) {
       setSimulating(true);
-      const addMessage = httpsCallable(functions, 'queryGPT3Completion');
-      addMessage({ prompt: createSimulationPrompt() })
-        .then((result) => {
-          const text = result.data.text;
-          console.log(text);
+      runGPTCompletion(createSimulationPrompt()).then((text) => {
           setSimulationResult("FROM: " + selectedSprite.name +"\nRE: snowball fight strategy\n" + text + "\n\n\n   - " + selectedSprite.name);
           setSimulating(false);
         });
