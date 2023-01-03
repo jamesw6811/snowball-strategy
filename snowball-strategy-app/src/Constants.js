@@ -5,6 +5,7 @@ import shakespeareImage from './images/shakespeare.png';
 import snowballsImage from './images/snowballs.png';
 import zeusImage from './images/zeus.png';
 import logImage from './images/log.png';
+import bellhooksImage from './images/bellhooks.png';
 
 
 export const ItemTypes = {
@@ -13,6 +14,7 @@ export const ItemTypes = {
   }
 
 export const GAMEPALETTE = [
+  {image:bellhooksImage, name:"Bell Hooks"}, 
   {image:churchillImage, name:"Winston Churchill"}, 
   {image:zeusImage, name:"Zeus"},
   {image:shakespeareImage, name:"William Shakespeare"}, 
