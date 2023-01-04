@@ -14,8 +14,8 @@ export default function Sprite({sprite, type}) {
 
   if (sprite.image) return (
     <>
-    <div ref={drag} class="tooltip">
-      <span class="tooltiptext">{sprite.name}</span>
+    <div ref={drag} className="tooltip">
+      <span className="tooltiptext">{sprite.name}</span>
       <ViewportDiv viewportHeight={9} viewportWidth={9}>
         <img src={sprite.image} alt={sprite.name} style={{position:"absolute", 
           height:"100%", 

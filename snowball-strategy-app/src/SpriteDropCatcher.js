@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useDrop } from "react-dnd";
-import { ItemTypes } from "./Constants";
+import { ItemTypes } from "./constants";
 
 export default function SpriteDropCatcher({children, handleDrop}){
     const catcherRef = useRef();
