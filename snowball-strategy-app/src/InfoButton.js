@@ -1,5 +1,6 @@
 import React from 'react';
 import infoIcon from './images/infoicon.png';
+import ViewportDiv from './ViewportDiv';
 
 export default function InfoButton({onClick}){
     return <div onClick={onClick}>

@@ -16,17 +16,16 @@ import SimulateButton from './SimulateButton';
 import InfoButton from './InfoButton';
 
 
-const initialSprites = {paletteBoard:[], simulationBoard:[]};
-SpritePalette.forEach((sprite, index)=>{
-  initialSprites.paletteBoard.push({id:index, x:1, y:index*3+2, image:sprite.image, name:sprite.name});
+const paletteSpriteLayout = SpritePalette.map((sprite, index)=>{
+  return {id:index, x:1, y:index*3+2, image:sprite.image, name:sprite.name};
 });
 
 function App() {
-  const [sprites, setSprites] = useState(initialSprites);
+  const [sprites, setSprites] = useState([]);
   const [selectedSprite, setSelectedSprite] = useState();
   const [simulationResult, setSimulationResult] = useState();
   const [simulating, setSimulating] = useState(false);
-  const [nextId, setNextId] = useState(6);
+  const [nextId, setNextId] = useState(0);
 
   const handleSimulationSpriteClick = useCallback((sprite)=>{
     setSelectedSprite(sprite);
@@ -34,9 +33,7 @@ function App() {
 
   const handleBoardDrop = useCallback(({id, boardX, boardY, type})=>{
     if (type===ItemTypes.SPRITE) {
-      setSprites({
-        paletteBoard:sprites.paletteBoard,
-        simulationBoard: sprites.simulationBoard.map(
+      setSprites(sprites.map(
           (sprite)=>{
             if(sprite.id===id){
               const newSprite = {...sprite, x:boardX, y:boardY};
@@ -44,15 +41,12 @@ function App() {
               return newSprite;
             } else return sprite;  
           })
-      });
+      );
     } else if (type===ItemTypes.PALETTE) {
-      const paletteSprite = sprites.paletteBoard.find((sprite)=>sprite.id===id);
+      const paletteSprite = paletteSpriteLayout.find((sprite)=>sprite.id===id);
       if (paletteSprite){
         const newSprite = {...paletteSprite, x:boardX, y:boardY, id:nextId};
-        setSprites({
-          paletteBoard:sprites.paletteBoard,
-          simulationBoard: [...sprites.simulationBoard, newSprite]
-        });
+        setSprites([...sprites, newSprite]);
         setSelectedSprite(newSprite);
         setNextId(nextId+1);
       } else {
@@ -66,16 +60,13 @@ function App() {
 
   const handlePaletteDrop = useCallback(({id, type})=>{
     if (type===ItemTypes.SPRITE) {
-      setSprites({
-        paletteBoard: sprites.paletteBoard,
-        simulationBoard: sprites.simulationBoard.filter((sprite)=>sprite.id!==id)
-      });
+      setSprites(sprites.filter((sprite)=>sprite.id!==id));
     }
     setSelectedSprite(null);
   },[sprites]);
 
   const hasEnoughSpritesToSimulate = useCallback(()=>{
-    return sprites.simulationBoard.length > 1;
+    return sprites.length > 1;
   },[sprites]);
 
   const readyToSimulate = useCallback(()=>{
@@ -86,7 +77,7 @@ function App() {
     if (readyToSimulate()) {
       setSimulating(true);
       runGPTCompletion(
-        createSimulationPrompt(sprites.simulationBoard, selectedSprite)
+        createSimulationPrompt(sprites, selectedSprite)
       ).then((text) => {
           setSimulationResult(
 `FROM: ${selectedSprite.name}
@@ -104,9 +95,9 @@ ${text}
     setSimulationResult(null);
   },[setSimulationResult])
 
-  const onClickInfo = ()=>{
+  const onClickInfo = useCallback(()=>{
     setSimulationResult(InfoString);
-  }
+  },[setSimulationResult]);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -121,17 +112,17 @@ ${text}
       </div>
       <div style={{display: "flex", justifyContent: "center"}}>
         <ViewportDiv viewportHeight={90} viewportWidth={10}>
-          <Board spriteType={ItemTypes.PALETTE} sprites={sprites.paletteBoard} 
+          <Board spriteType={ItemTypes.PALETTE} sprites={paletteSpriteLayout} 
           handleBoardDrop={handlePaletteDrop}
           unitsWidth={2} unitsHeight={27}/>
         </ViewportDiv>
         <ViewportDiv viewportHeight={90} viewportWidth={5} />
         <ViewportDiv viewportHeight={90} viewportWidth={85}>
-          <Board spriteType={ItemTypes.SPRITE} sprites={sprites.simulationBoard} handleSpriteClick={handleSimulationSpriteClick}
+          <Board spriteType={ItemTypes.SPRITE} sprites={sprites} handleSpriteClick={handleSimulationSpriteClick}
           handleBoardDrop={handleBoardDrop} backgroundImage={snowBackground} contain={false}/>
         </ViewportDiv>
       </div>
-      <ResultsDisplay result={simulationResult} onClick={resetResult} />
+      <ResultsDisplay results={simulationResult} onClick={resetResult} />
       {simulating && <Snowfall />}
     </DndProvider>
   );
