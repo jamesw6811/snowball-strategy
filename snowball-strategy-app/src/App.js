@@ -3,7 +3,6 @@ import './App.css';
 import Board from './Board';
 import Snowfall from 'react-snowfall';
 import snowBackground from './images/snowBackground.png';
-import infoIcon from './images/infoicon.png';
 import ViewportDiv from './ViewportDiv';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -13,6 +12,8 @@ import { SpritePalette } from './spriteAssets';
 import ResultsDisplay from './ResultsDisplay';
 import { runGPTCompletion } from './cloudFunctions';
 import createSimulationPrompt from './createSimulationPrompt';
+import SimulateButton from './SimulateButton';
+import InfoButton from './InfoButton';
 
 
 const initialSprites = {paletteBoard:[], simulationBoard:[]};
@@ -111,20 +112,12 @@ ${text}
     <DndProvider backend={HTML5Backend}>
       <div style={{display: "flex", justifyContent: "center", alignItems: "center", 
       marginBottom: "1vh", marginTop: "1vh"}}>
-        <button style={{height:"5vh", width:"40vh", borderRadius:"1vh",
-        background:readyToSimulate()?"#09E85E":"#817E9F",
-        marginRight: "1vh"
-        }} onClick={simulateButtonClick}>
-          { (simulating && <>Simulating...</>) ||
-          (!hasEnoughSpritesToSimulate() && <>Drag things into the snowball arena</>) ||
-          (hasEnoughSpritesToSimulate() && !selectedSprite && <>Choose someone by dragging</>) ||
-          (readyToSimulate() && <>View {selectedSprite.name}'s plan</>)}
-        </button>
-        <div onClick={onClickInfo}>
-          <ViewportDiv viewportHeight={3} viewportWidth={3}>
-          <img style={{width:"100%", height:"100%"}} src={infoIcon} alt="info"/>
-          </ViewportDiv>
-        </div>
+        <SimulateButton enoughSprites={hasEnoughSpritesToSimulate()} 
+          readyToSimulate={readyToSimulate}
+          simulating={simulating}
+          selectedSprite={selectedSprite} 
+          onClick={simulateButtonClick} />
+        <InfoButton onClick={onClickInfo} />
       </div>
       <div style={{display: "flex", justifyContent: "center"}}>
         <ViewportDiv viewportHeight={90} viewportWidth={10}>
@@ -138,11 +131,7 @@ ${text}
           handleBoardDrop={handleBoardDrop} backgroundImage={snowBackground} contain={false}/>
         </ViewportDiv>
       </div>
-      {!!simulationResult &&
-          <ResultsDisplay handleClick={resetResult}>
-            {simulationResult}
-          </ResultsDisplay>
-      }
+      <ResultsDisplay result={simulationResult} onClick={resetResult} />
       {simulating && <Snowfall />}
     </DndProvider>
   );
