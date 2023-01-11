@@ -1,7 +1,8 @@
-export default function createSimulationPrompt(allSprites, promptSprite) {
+export default function createSimulationPrompt(allSprites, promptSpriteId) {
     var prompt =  "You are in a snowball fight. ";
+    const promptSprite = allSprites.get(promptSpriteId);
     allSprites.forEach((sprite)=>{
-      if(sprite.id !== promptSprite.id){
+      if(sprite.id !== promptSpriteId){
         prompt += createLocationPrompt(sprite, promptSprite) + " ";
       }
     });

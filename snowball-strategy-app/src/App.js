@@ -16,13 +16,14 @@ import SimulateButton from './SimulateButton';
 import InfoButton from './InfoButton';
 import useNextId from './useNextId';
 
-const paletteSpriteLayout = SpritePalette.map((sprite, index)=>{
-  return {id:index, x:1, y:index*3+2, image:sprite.image, name:sprite.name};
+const paletteSpriteLayout = new Map();
+SpritePalette.forEach((sprite, index)=>{
+  paletteSpriteLayout.set(index, {x:1, y:index*3+2, image:sprite.image, name:sprite.name});
 });
 
 function App() {
-  const [sprites, setSprites] = useState([]);
-  const [selectedSprite, setSelectedSprite] = useState();
+  const [sprites, setSprites] = useState(new Map());
+  const [selectedSpriteId, setSelectedSpriteId] = useState();
   const [simulationResult, setSimulationResult] = useState();
   const [simulating, setSimulating] = useState(false);
   const nextId = useNextId().next; // TODO: IS THIS BAD PRACTICE?
@@ -35,31 +36,25 @@ function App() {
     }
   },[]);
 
-  const handleSimulationSpriteClick = useCallback((sprite)=>{
-    setSelectedSprite(sprite);
+  const handleSimulationSpriteClick = useCallback((spriteId)=>{
+    setSelectedSpriteId(spriteId);
   },[]);
 
   const handleSpriteMoved = useCallback(({boardX, boardY, id})=>{
-    setSprites(sprites.map(
-      (sprite)=>{
-        if(sprite.id===id){
-          const newSprite = {...sprite, x:boardX, y:boardY};
-          setSelectedSprite(newSprite);
-          return newSprite;
-        } else return sprite;  
-      })
-    );
+    const newSprites = new Map(sprites);
+    newSprites.set(id, {...sprites.get(id), x:boardX, y:boardY});
+    setSprites(newSprites);
+    setSelectedSpriteId(id);
   }, [sprites]);
 
   const handleSpritePlaced = useCallback(({boardX, boardY, id})=>{
-    const paletteSprite = paletteSpriteLayout.find((sprite)=>sprite.id===id);
-    if (paletteSprite){
-      const newSprite = {...paletteSprite, x:boardX, y:boardY, id:nextId()};
-      setSprites([...sprites, newSprite]);
-      setSelectedSprite(newSprite);
-    } else {
-      console.error("Palette id not found");
-    }
+    const newSprite = {...paletteSpriteLayout.get(id), 
+      x:boardX, y:boardY};
+    const newSprites = new Map(sprites);
+    const newId = nextId();
+    newSprites.set(newId, newSprite);
+    setSprites(newSprites);
+    setSelectedSpriteId(newId);
   }, [sprites, nextId]);
 
   const handleBoardDrop = useCallback(({type, ...dropParams})=>{
@@ -75,25 +70,27 @@ function App() {
 
   const handlePaletteDrop = useCallback(({id, type})=>{
     if (type===ItemTypes.SPRITE) {
-      setSprites(sprites.filter((sprite)=>sprite.id!==id));
+      const newSprites = new Map(sprites);
+      newSprites.delete(id);
+      setSprites(newSprites);
     }
-    setSelectedSprite(null);
+    setSelectedSpriteId(null);
   },[sprites]);
 
   const hasEnoughSpritesToSimulate = useCallback(()=>{
-    return sprites.length > 1;
+    return sprites.size > 1;
   },[sprites]);
 
   const readyToSimulate = useCallback(()=>{
-    return selectedSprite && hasEnoughSpritesToSimulate() && !simulating;
-  },[selectedSprite, hasEnoughSpritesToSimulate, simulating]);
+    return !!selectedSpriteId && hasEnoughSpritesToSimulate() && !simulating;
+  },[selectedSpriteId, hasEnoughSpritesToSimulate, simulating]);
 
   const simulate = wrapWithSimulating(useCallback(async ()=>{
     const text = await runGPTCompletion(
-      createSimulationPrompt(sprites, selectedSprite)
+      createSimulationPrompt(sprites, selectedSpriteId)
     );
-    setSimulationResult(formatSimulationResult(selectedSprite.name, text));
-  }, [selectedSprite, sprites]));
+    setSimulationResult(formatSimulationResult(sprites.get(selectedSpriteId).name, text));
+  }, [selectedSpriteId, sprites]));
 
   const simulateButtonClick = useCallback(()=>{
     if (readyToSimulate()) simulate();
@@ -114,7 +111,7 @@ function App() {
         <SimulateButton enoughSprites={hasEnoughSpritesToSimulate()} 
           readyToSimulate={readyToSimulate}
           simulating={simulating}
-          selectedSprite={selectedSprite} 
+          selectedSprite={sprites.get(selectedSpriteId)} 
           onClick={simulateButtonClick} />
         <InfoButton onClick={onClickInfo} />
       </div>

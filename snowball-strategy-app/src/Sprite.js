@@ -3,10 +3,10 @@ import ViewportDiv from './ViewportDiv'
 import {useDrag} from 'react-dnd'
 import './Sprite.css'
 
-export default function Sprite({sprite, type}) {
+export default function Sprite({id, sprite, type}) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: type,
-    item: { id: sprite.id },
+    item: { id: id },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging()
     })
