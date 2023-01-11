@@ -3,6 +3,13 @@ export const ItemTypes = {
     PALETTE: "palette"
   }
 
+export const formatSimulationResult = (spriteName, text)=>{
+    return `FROM: ${spriteName}
+    RE: snowball fight strategy
+    ${text}
+      - ${spriteName}`;
+  };
+
 export const InfoString = `this web experience simulates the thoughts and strategies of participants in a snow fight
     
 to get started, drag at least 2 images from the palette on the left to the snow arena on the right 

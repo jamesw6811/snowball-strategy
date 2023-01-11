@@ -7,14 +7,14 @@ import ViewportDiv from './ViewportDiv';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useCallback, useState } from 'react';
-import { InfoString, ItemTypes } from './constants';
+import { formatSimulationResult, InfoString, ItemTypes } from './constants';
 import { SpritePalette } from './spriteAssets';
 import ResultsDisplay from './ResultsDisplay';
 import { runGPTCompletion } from './cloudFunctions';
 import createSimulationPrompt from './createSimulationPrompt';
 import SimulateButton from './SimulateButton';
 import InfoButton from './InfoButton';
-
+import useNextId from './useNextId';
 
 const paletteSpriteLayout = SpritePalette.map((sprite, index)=>{
   return {id:index, x:1, y:index*3+2, image:sprite.image, name:sprite.name};
@@ -25,38 +25,53 @@ function App() {
   const [selectedSprite, setSelectedSprite] = useState();
   const [simulationResult, setSimulationResult] = useState();
   const [simulating, setSimulating] = useState(false);
-  const [nextId, setNextId] = useState(0);
+  const nextId = useNextId().next; // TODO: IS THIS BAD PRACTICE?
+
+  const wrapWithSimulating = useCallback((asyncFunction)=>{
+    return async ()=>{
+      setSimulating(true);
+      await asyncFunction();
+      setSimulating(false);
+    }
+  },[]);
 
   const handleSimulationSpriteClick = useCallback((sprite)=>{
     setSelectedSprite(sprite);
-  },[setSelectedSprite]);
+  },[]);
 
-  const handleBoardDrop = useCallback(({id, boardX, boardY, type})=>{
+  const handleSpriteMoved = useCallback(({boardX, boardY, id})=>{
+    setSprites(sprites.map(
+      (sprite)=>{
+        if(sprite.id===id){
+          const newSprite = {...sprite, x:boardX, y:boardY};
+          setSelectedSprite(newSprite);
+          return newSprite;
+        } else return sprite;  
+      })
+    );
+  }, [sprites]);
+
+  const handleSpritePlaced = useCallback(({boardX, boardY, id})=>{
+    const paletteSprite = paletteSpriteLayout.find((sprite)=>sprite.id===id);
+    if (paletteSprite){
+      const newSprite = {...paletteSprite, x:boardX, y:boardY, id:nextId()};
+      setSprites([...sprites, newSprite]);
+      setSelectedSprite(newSprite);
+    } else {
+      console.error("Palette id not found");
+    }
+  }, [sprites, nextId]);
+
+  const handleBoardDrop = useCallback(({type, ...dropParams})=>{
     if (type===ItemTypes.SPRITE) {
-      setSprites(sprites.map(
-          (sprite)=>{
-            if(sprite.id===id){
-              const newSprite = {...sprite, x:boardX, y:boardY};
-              setSelectedSprite(newSprite);
-              return newSprite;
-            } else return sprite;  
-          })
-      );
+      handleSpriteMoved(dropParams);
     } else if (type===ItemTypes.PALETTE) {
-      const paletteSprite = paletteSpriteLayout.find((sprite)=>sprite.id===id);
-      if (paletteSprite){
-        const newSprite = {...paletteSprite, x:boardX, y:boardY, id:nextId};
-        setSprites([...sprites, newSprite]);
-        setSelectedSprite(newSprite);
-        setNextId(nextId+1);
-      } else {
-        console.error("Palette id not found");
-      }
+      handleSpritePlaced(dropParams);
     } else {
       console.error("Type not found");
       return;
     }
-  },[nextId, sprites]);
+  },[handleSpriteMoved, handleSpritePlaced]);
 
   const handlePaletteDrop = useCallback(({id, type})=>{
     if (type===ItemTypes.SPRITE) {
@@ -73,31 +88,24 @@ function App() {
     return selectedSprite && hasEnoughSpritesToSimulate() && !simulating;
   },[selectedSprite, hasEnoughSpritesToSimulate, simulating]);
 
+  const simulate = wrapWithSimulating(useCallback(async ()=>{
+    const text = await runGPTCompletion(
+      createSimulationPrompt(sprites, selectedSprite)
+    );
+    setSimulationResult(formatSimulationResult(selectedSprite.name, text));
+  }, [selectedSprite, sprites]));
+
   const simulateButtonClick = useCallback(()=>{
-    if (readyToSimulate()) {
-      setSimulating(true);
-      runGPTCompletion(
-        createSimulationPrompt(sprites, selectedSprite)
-      ).then((text) => {
-          setSimulationResult(
-`FROM: ${selectedSprite.name}
-RE: snowball fight strategy
-${text}
-
-
-- ${selectedSprite.name}`);
-          setSimulating(false);
-        });
-      }
-  },[readyToSimulate, selectedSprite, sprites])
+    if (readyToSimulate()) simulate();
+  },[readyToSimulate, simulate]);
 
   const resetResult = useCallback(()=>{
     setSimulationResult(null);
-  },[setSimulationResult])
+  },[]);
 
   const onClickInfo = useCallback(()=>{
     setSimulationResult(InfoString);
-  },[setSimulationResult]);
+  },[]);
 
   return (
     <DndProvider backend={HTML5Backend}>
