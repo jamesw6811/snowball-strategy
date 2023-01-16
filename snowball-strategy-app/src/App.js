@@ -23,7 +23,7 @@ SpritePalette.forEach((sprite, index)=>{
 
 function App() {
   const [sprites, setSprites] = useState(new Map());
-  const [selectedSpriteId, setSelectedSpriteId] = useState();
+  const [selectedSpriteId, setSelectedSpriteId] = useState(null);
   const [simulationResult, setSimulationResult] = useState();
   const [simulating, setSimulating] = useState(false);
   const nextId = useNextId().next; // TODO: IS THIS BAD PRACTICE?
@@ -82,7 +82,7 @@ function App() {
   },[sprites]);
 
   const readyToSimulate = useCallback(()=>{
-    return !!selectedSpriteId && hasEnoughSpritesToSimulate() && !simulating;
+    return (selectedSpriteId!=null) && hasEnoughSpritesToSimulate() && !simulating;
   },[selectedSpriteId, hasEnoughSpritesToSimulate, simulating]);
 
   const simulate = wrapWithSimulating(useCallback(async ()=>{
@@ -109,7 +109,7 @@ function App() {
       <div style={{display: "flex", justifyContent: "center", alignItems: "center", 
       marginBottom: "1vh", marginTop: "1vh"}}>
         <SimulateButton enoughSprites={hasEnoughSpritesToSimulate()} 
-          readyToSimulate={readyToSimulate}
+          readyToSimulate={readyToSimulate()}
           simulating={simulating}
           selectedSprite={sprites.get(selectedSpriteId)} 
           onClick={simulateButtonClick} />
@@ -119,11 +119,11 @@ function App() {
         <ViewportDiv viewportHeight={90} viewportWidth={10}>
           <Board spriteType={ItemTypes.PALETTE} sprites={paletteSpriteLayout} 
           handleBoardDrop={handlePaletteDrop}
-          unitsWidth={2} unitsHeight={27}/>
+          unitsWidth={2} unitsHeight={29}/>
         </ViewportDiv>
         <ViewportDiv viewportHeight={90} viewportWidth={5} />
         <ViewportDiv viewportHeight={90} viewportWidth={85}>
-          <Board spriteType={ItemTypes.SPRITE} sprites={sprites} handleSpriteClick={handleSimulationSpriteClick}
+          <Board spriteType={ItemTypes.SPRITE} sprites={sprites} handleSpriteIdClicked={handleSimulationSpriteClick}
           handleBoardDrop={handleBoardDrop} backgroundImage={snowBackground} contain={false}/>
         </ViewportDiv>
       </div>

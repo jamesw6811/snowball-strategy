@@ -1,18 +1,20 @@
-import churchillImage from './images/churchill.png';
-import meankidImage from './images/meankid.png';
 import mittensImage from './images/mittens.png';
 import shakespeareImage from './images/shakespeare.png';
 import snowballsImage from './images/snowballs.png';
 import zeusImage from './images/zeus.png';
 import logImage from './images/log.png';
-import bellhooksImage from './images/bellhooks.png';
+import alexandria from './images/alexandria.png';
+import cthulu from './images/cthulu.png';
+import mlk from './images/mlk.png';
+import stormthesuperhero from './images/stormthesuperhero.png';
 
 export const SpritePalette = [
-    {image:bellhooksImage, name:"Bell Hooks"}, 
-    {image:churchillImage, name:"Winston Churchill"}, 
+    {image:alexandria, name:"Alexandria Ocasio-Cortez"}, 
+    {image:mlk, name:"Martin Luther King"}, 
     {image:zeusImage, name:"Zeus"},
+    {image:stormthesuperhero, name:"Storm, the superhero"},
     {image:shakespeareImage, name:"William Shakespeare"}, 
-    {image:meankidImage, name:"a mean kid"}, 
+    {image:cthulu, name:"Cthulu"}, 
     {image:mittensImage, name:"a pair of mittens"}, 
     {image:snowballsImage, name:"a pile of snowballs"}, 
     {image:logImage, name:"a fallen log"}
