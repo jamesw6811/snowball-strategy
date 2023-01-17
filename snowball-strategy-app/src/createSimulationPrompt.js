@@ -1,14 +1,17 @@
 export default function createSimulationPrompt(allSprites, promptSpriteId) {
     var prompt =  "You are in a snowball fight. The following are the objects and opponents in your surroundings. ";
     const promptSprite = allSprites.get(promptSpriteId);
-    allSprites.forEach((sprite)=>{
-      if(sprite.id !== promptSpriteId){
+    [...allSprites.keys()].forEach((id) => {
+      var sprite = allSprites.get(id);
+      if(id !== promptSpriteId){
+        console.log(createLocationPrompt(sprite, promptSprite));
+        console.log("" + id +", " + promptSpriteId);
         prompt += createLocationPrompt(sprite, promptSprite) + " ";
       }
     });
     prompt += `You are ${promptSprite.name}. Introduce yourself and your values. 
-      Then explain your strategy to win the snowball fight 
-      step by step in the writing style of ${promptSprite.name}.`;
+      Then explain your detailed strategy to win the snowball fight 
+      step by step in the writing style of ${promptSprite.name}, in 150 to 300 words, mentioning each opponent.`;
     return prompt;
 };
 

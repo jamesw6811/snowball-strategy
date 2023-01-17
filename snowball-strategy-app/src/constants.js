@@ -11,7 +11,9 @@ export const formatSimulationResult = (spriteName, text)=>{
   };
 
 export const InfoString = `this web experience simulates the thoughts and strategies of participants in a snow fight
-    
+
+this will almost definitely NOT work on your mobile device. use a desktop browser.
+
 to get started, drag at least 2 images from the palette on the left to the snow arena on the right 
 then click the button at the top and wait a bit
 
