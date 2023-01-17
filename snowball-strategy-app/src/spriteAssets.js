@@ -12,7 +12,7 @@ export const SpritePalette = [
     {image:alexandria, name:"Alexandria Ocasio-Cortez"}, 
     {image:mlk, name:"Martin Luther King"}, 
     {image:zeusImage, name:"Zeus"},
-    {image:stormthesuperhero, name:"Storm, the superhero"},
+    {image:stormthesuperhero, name:"Storm, from X-Men"},
     {image:shakespeareImage, name:"William Shakespeare"}, 
     {image:cthulu, name:"Cthulu"}, 
     {image:mittensImage, name:"a pair of mittens"}, 
