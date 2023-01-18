@@ -15,6 +15,7 @@ import createSimulationPrompt from './createSimulationPrompt';
 import SimulateButton from './SimulateButton';
 import InfoButton from './InfoButton';
 import useNextId from './useNextId';
+import letitwomp from './sound/letitwomp.mp3';
 
 const paletteSpriteLayout = new Map();
 SpritePalette.forEach((sprite, index)=>{
@@ -114,6 +115,11 @@ function App() {
           selectedSprite={sprites.get(selectedSpriteId)} 
           onClick={simulateButtonClick} />
         <InfoButton onClick={onClickInfo} />
+        <ViewportDiv viewportHeight={3} viewportWidth={40}>
+          <audio controlslist="play" controls loop style={{width:"100%", height:"100%", marginLeft:"1vw"}}>
+            <source src={letitwomp} type="audio/mpeg" />
+          </audio>
+        </ViewportDiv>
       </div>
       <div style={{display: "flex", justifyContent: "center"}}>
         <ViewportDiv viewportHeight={90} viewportWidth={10}>
