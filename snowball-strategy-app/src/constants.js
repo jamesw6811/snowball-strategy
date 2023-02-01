@@ -1,6 +1,6 @@
 export const ItemTypes = {
-    BOARDSPRITE: 'sprite',
-    PALETTESPRITE: "palette"
+    BOARDSPRITE: 'boardsprite',
+    PALETTESPRITE: "palettesprite"
   }
 
 export const formatSimulationResult = (spriteName, text)=>{
