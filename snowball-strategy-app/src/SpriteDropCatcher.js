@@ -6,7 +6,7 @@ export default function SpriteDropCatcher({children, handleDrop}){
   const catcherRef = useRef();
 
   const [, drop] = useDrop(() => ({
-      accept: [ItemTypes.SPRITE, ItemTypes.PALETTE],
+      accept: [ItemTypes.BOARDSPRITE, ItemTypes.PALETTESPRITE],
       drop(item, monitor) {
         const dropOffset = monitor.getClientOffset();
         const type = monitor.getItemType();

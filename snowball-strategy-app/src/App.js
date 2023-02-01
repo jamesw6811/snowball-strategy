@@ -23,7 +23,7 @@ SpritePalette.forEach((sprite, index)=>{
 });
 
 function App() {
-  const [sprites, setSprites] = useState(new Map());
+  const [boardSprites, setBoardSprites] = useState(new Map());
   const [selectedSpriteId, setSelectedSpriteId] = useState(null);
   const [simulationResult, setSimulationResult] = useState();
   const [simulating, setSimulating] = useState(false);
@@ -42,33 +42,33 @@ function App() {
   },[]);
 
   const handleSpriteMoved = useCallback(({boardX, boardY, id})=>{
-    const newSprites = new Map(sprites);
-    newSprites.set(id, {...sprites.get(id), x:boardX, y:boardY});
-    setSprites(newSprites);
+    const newSprites = new Map(boardSprites);
+    newSprites.set(id, {...boardSprites.get(id), x:boardX, y:boardY});
+    setBoardSprites(newSprites);
     setSelectedSpriteId(id);
-  }, [sprites]);
+  }, [boardSprites]);
 
   const handleSpritePlaced = useCallback(({boardX, boardY, id})=>{
     const newSprite = {...paletteSpriteLayout.get(id), 
       x:boardX, y:boardY};
-    const newSprites = new Map(sprites);
+    const newSprites = new Map(boardSprites);
     const newId = nextId();
     newSprites.set(newId, newSprite);
-    setSprites(newSprites);
+    setBoardSprites(newSprites);
     setSelectedSpriteId(newId);
-  }, [sprites, nextId]);
+  }, [boardSprites, nextId]);
   
   const handleSpriteRemoved = useCallback((id)=>{
-    const newSprites = new Map(sprites);
+    const newSprites = new Map(boardSprites);
     newSprites.delete(id);
-    setSprites(newSprites);
+    setBoardSprites(newSprites);
     setSelectedSpriteId(null);
-  }, [sprites]);
+  }, [boardSprites]);
 
   const handleBoardDrop = useCallback(({type, ...dropParams})=>{
-    if (type===ItemTypes.SPRITE) {
+    if (type===ItemTypes.BOARDSPRITE) {
       handleSpriteMoved(dropParams);
-    } else if (type===ItemTypes.PALETTE) {
+    } else if (type===ItemTypes.PALETTESPRITE) {
       handleSpritePlaced(dropParams);
     } else {
       console.error("Type not found");
@@ -77,14 +77,14 @@ function App() {
   },[handleSpriteMoved, handleSpritePlaced]);
 
   const handlePaletteDrop = useCallback(({id, type})=>{
-    if (type===ItemTypes.SPRITE) {
+    if (type===ItemTypes.BOARDSPRITE) {
       handleSpriteRemoved(id);
     }
   },[handleSpriteRemoved]);
 
   const hasEnoughSpritesToSimulate = useCallback(()=>{
-    return sprites.size > 1;
-  },[sprites]);
+    return boardSprites.size > 1;
+  },[boardSprites]);
 
   const readyToSimulate = useCallback(()=>{
     return (selectedSpriteId!=null) && hasEnoughSpritesToSimulate() && !simulating;
@@ -92,10 +92,10 @@ function App() {
 
   const simulate = wrapWithSimulating(useCallback(async ()=>{
     const text = await runGPTCompletion(
-      createSimulationPrompt(sprites, selectedSpriteId)
+      createSimulationPrompt(boardSprites, selectedSpriteId)
     );
-    setSimulationResult(formatSimulationResult(sprites.get(selectedSpriteId).name, text));
-  }, [selectedSpriteId, sprites]));
+    setSimulationResult(formatSimulationResult(boardSprites.get(selectedSpriteId).name, text));
+  }, [selectedSpriteId, boardSprites]));
 
   const simulateButtonClick = useCallback(()=>{
     if (readyToSimulate()) simulate();
@@ -116,7 +116,7 @@ function App() {
         <SimulateButton enoughSprites={hasEnoughSpritesToSimulate()} 
           readyToSimulate={readyToSimulate()}
           simulating={simulating}
-          selectedSprite={sprites.get(selectedSpriteId)} 
+          selectedSprite={boardSprites.get(selectedSpriteId)} 
           onClick={simulateButtonClick} />
         <InfoButton onClick={onClickInfo} />
         <ViewportDiv viewportHeight={3} viewportWidth={40}>
@@ -127,13 +127,13 @@ function App() {
       </div>
       <div style={{display: "flex", justifyContent: "center"}}>
         <ViewportDiv viewportHeight={90} viewportWidth={10}>
-          <Board spriteType={ItemTypes.PALETTE} sprites={paletteSpriteLayout} 
+          <Board spriteType={ItemTypes.PALETTESPRITE} sprites={paletteSpriteLayout} 
           handleBoardDrop={handlePaletteDrop}
           unitsWidth={2} unitsHeight={29}/>
         </ViewportDiv>
         <ViewportDiv viewportHeight={90} viewportWidth={5} />
         <ViewportDiv viewportHeight={90} viewportWidth={85}>
-          <Board spriteType={ItemTypes.SPRITE} sprites={sprites} handleSpriteIdClicked={handleSimulationSpriteClick}
+          <Board spriteType={ItemTypes.BOARDSPRITE} sprites={boardSprites} handleSpriteIdClicked={handleSimulationSpriteClick}
           handleBoardDrop={handleBoardDrop} backgroundImage={snowBackground} contain={false}/>
         </ViewportDiv>
       </div>
