@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "./constants";
+import './SpriteDropCatcher.css';
 
 export default function SpriteDropCatcher({children, handleDrop}){
   const catcherRef = useRef();
@@ -17,8 +18,8 @@ export default function SpriteDropCatcher({children, handleDrop}){
     }), [handleDrop]
   )
 
-  return <div ref={drop} style={{width:"100%", height:"100%"}}>
-      <div ref={catcherRef} style={{width:"100%", height:"100%"}}>
+  return <div ref={drop} className="spritedropcatcher">
+      <div ref={catcherRef} className="spritedropcatcher">
         {children}
       </div>
     </div>

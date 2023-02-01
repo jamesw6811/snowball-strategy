@@ -1,5 +1,3 @@
-
-import './App.css';
 import Board from './Board';
 import Snowfall from 'react-snowfall';
 import snowBackground from './images/snowBackground.png';
@@ -15,7 +13,8 @@ import createSimulationPrompt from './createSimulationPrompt';
 import SimulateButton from './SimulateButton';
 import InfoButton from './InfoButton';
 import useNextId from './useNextId';
-import letitwomp from './sound/letitwomp.mp3';
+import './App.css';
+import JinglePlayer from './JinglePlayer';
 
 const paletteSpriteLayout = new Map();
 SpritePalette.forEach((sprite, index)=>{
@@ -111,21 +110,26 @@ function App() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div style={{display: "flex", justifyContent: "center", alignItems: "center", 
-      marginBottom: "1vh", marginTop: "1vh"}}>
-        <SimulateButton enoughSprites={hasEnoughSpritesToSimulate()} 
-          readyToSimulate={readyToSimulate()}
-          simulating={simulating}
-          selectedSprite={boardSprites.get(selectedSpriteId)} 
-          onClick={simulateButtonClick} />
-        <InfoButton onClick={onClickInfo} />
-        <ViewportDiv viewportHeight={3} viewportWidth={40}>
-          <audio controlsList="play" controls loop style={{width:"100%", height:"100%", marginLeft:"1vw"}}>
-            <source src={letitwomp} type="audio/mpeg" />
-          </audio>
+      <div className='viewportrow'>
+        <ViewportDiv viewportHeight={7} viewportWidth={100}>
+          <div className="topbar">
+            <ViewportDiv viewportHeight={5} viewportWidth={50}>
+              <SimulateButton enoughSprites={hasEnoughSpritesToSimulate()} 
+                readyToSimulate={readyToSimulate()}
+                simulating={simulating}
+                selectedSprite={boardSprites.get(selectedSpriteId)} 
+                onClick={simulateButtonClick} />
+            </ViewportDiv>
+            <ViewportDiv viewportHeight={3} viewportWidth={3}>
+              <InfoButton onClick={onClickInfo} />
+            </ViewportDiv>
+            <ViewportDiv viewportHeight={3} viewportWidth={40}>
+              <JinglePlayer />
+            </ViewportDiv>
+          </div>
         </ViewportDiv>
       </div>
-      <div style={{display: "flex", justifyContent: "center"}}>
+      <div className='viewportrow'>
         <ViewportDiv viewportHeight={90} viewportWidth={10}>
           <Board spriteType={ItemTypes.PALETTESPRITE} sprites={paletteSpriteLayout} 
           handleBoardDrop={handlePaletteDrop}

@@ -1,24 +1,41 @@
 .tooltip {
     position: relative;
     display: inline-block;
-  }
+}
   
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    
-    /* Position the tooltip */
-    position: absolute;
-    z-index: 1;
-    top: -25%;
-    left: 75%;
-  }
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
   
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-  }
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -25%;
+  left: 75%;
+}
+  
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.spriteimg {
+  position: absolute;
+  height: 100%; 
+  width: 100%; 
+  top: -50%;
+  left: -50%;
+  cursor: move;
+}
+
+.visible {
+  visibility: visible;
+}
+
+.hidden {
+  visibility: hidden;
+}

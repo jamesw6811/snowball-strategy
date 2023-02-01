@@ -1,0 +1,12 @@
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1vh; 
+    margin-top: 1vh;
+}
+
+.viewportrow {
+  display: flex;
+  justify-content: center;
+}

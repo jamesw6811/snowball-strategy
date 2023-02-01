@@ -1,0 +1,10 @@
+.simulatebutton {
+    height: 100%;
+    width: 100%; 
+    border-radius: 1vh;
+    background: #817E9F;
+}
+
+.ready {
+    background: #09E85E;
+}

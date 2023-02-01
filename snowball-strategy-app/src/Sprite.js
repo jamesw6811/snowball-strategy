@@ -17,12 +17,8 @@ export default function Sprite({id, sprite, type}) {
     <div ref={drag} className="tooltip">
       <span className="tooltiptext">{sprite.name}</span>
       <ViewportDiv viewportHeight={9} viewportWidth={9}>
-        <img src={sprite.image} alt={sprite.name} style={{position:"absolute", 
-          height:"100%", 
-          width:"100%", 
-          visibility:isDragging?"hidden":"visible",
-          top:"-50%", left:"-50%",
-          cursor: "move"}}/>
+        <img className={`spriteimg ${isDragging?"hidden":"visible"}`} 
+          src={sprite.image} alt={sprite.name}/>
       </ViewportDiv>
     </div>
     </>
