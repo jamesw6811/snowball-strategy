@@ -5,7 +5,7 @@ export default function SimulateButton({enoughSprites, readyToSimulate, simulati
     background:readyToSimulate?"#09E85E":"#817E9F",
     marginRight: "1vh"
     }} onClick={onClick}>
-      { (simulating && <>Simulating...</>) ||
+      {(simulating && <>Simulating...</>) ||
       (!enoughSprites && <>Drag things into the snowball arena</>) ||
       (!selectedSprite && <>Click on someone to simulate</>) ||
       (readyToSimulate && <>View {selectedSprite.name}'s plan</>)}

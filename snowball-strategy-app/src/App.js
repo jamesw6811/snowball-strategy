@@ -57,6 +57,13 @@ function App() {
     setSprites(newSprites);
     setSelectedSpriteId(newId);
   }, [sprites, nextId]);
+  
+  const handleSpriteRemoved = useCallback((id)=>{
+    const newSprites = new Map(sprites);
+    newSprites.delete(id);
+    setSprites(newSprites);
+    setSelectedSpriteId(null);
+  }, [sprites]);
 
   const handleBoardDrop = useCallback(({type, ...dropParams})=>{
     if (type===ItemTypes.SPRITE) {
@@ -71,12 +78,9 @@ function App() {
 
   const handlePaletteDrop = useCallback(({id, type})=>{
     if (type===ItemTypes.SPRITE) {
-      const newSprites = new Map(sprites);
-      newSprites.delete(id);
-      setSprites(newSprites);
+      handleSpriteRemoved(id);
     }
-    setSelectedSpriteId(null);
-  },[sprites]);
+  },[handleSpriteRemoved]);
 
   const hasEnoughSpritesToSimulate = useCallback(()=>{
     return sprites.size > 1;
@@ -116,7 +120,7 @@ function App() {
           onClick={simulateButtonClick} />
         <InfoButton onClick={onClickInfo} />
         <ViewportDiv viewportHeight={3} viewportWidth={40}>
-          <audio controlslist="play" controls loop style={{width:"100%", height:"100%", marginLeft:"1vw"}}>
+          <audio controlsList="play" controls loop style={{width:"100%", height:"100%", marginLeft:"1vw"}}>
             <source src={letitwomp} type="audio/mpeg" />
           </audio>
         </ViewportDiv>

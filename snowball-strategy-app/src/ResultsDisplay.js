@@ -12,9 +12,10 @@ export default function ResultsDisplay({results, onClick}){
             }} onClick={onClick}>
                 <div style={{overflow:"auto", maxHeight:"100%", maxWidth:"100%", boxSizing: "border-box",
     padding: "10%"}} >
-                    <span style={{whiteSpace: "pre-wrap"}}>{results}
+                    <span style={{whiteSpace: "pre-wrap"}}>
+                        {results}
                     </span>
-                    </div>
+                </div>
         </div>
     else return <></>
     

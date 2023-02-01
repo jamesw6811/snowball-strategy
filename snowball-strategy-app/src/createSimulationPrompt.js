@@ -4,8 +4,6 @@ export default function createSimulationPrompt(allSprites, promptSpriteId) {
     [...allSprites.keys()].forEach((id) => {
       var sprite = allSprites.get(id);
       if(id !== promptSpriteId){
-        console.log(createLocationPrompt(sprite, promptSprite));
-        console.log("" + id +", " + promptSpriteId);
         prompt += createLocationPrompt(sprite, promptSprite) + " ";
       }
     });
@@ -33,7 +31,7 @@ const createLocationPrompt = (viewedSprite, originSprite)=>{
     const angle = Math.atan2(dy, dx);
     const div16angle = Math.floor(16*angle/(2.0*Math.PI));
     var direction;
-    switch (div16angle) { //TODO: change this to an array of directions instead of ugly switch
+    switch (div16angle) {
       case -8:
         direction = "west";
         break;
