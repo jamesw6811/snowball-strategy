@@ -1,35 +1,44 @@
-import * as functions from "firebase-functions";
+import * as functions from "firebase-functions/v2";
+import OpenAI from "openai";
 
-import {Configuration, OpenAIApi} from "openai";
+export const queryGPTCompletion = functions.https.onCall(
+  { secrets: ["OPENAI_API_KEY"] },
+  async (request: functions.https.CallableRequest) => {
+    const data = request.data;
+    try {
+      console.log("Function started");
 
+      // Validate input
+      if (!data || !data.prompt) {
+        throw new functions.https.HttpsError(
+          "invalid-argument",
+          "The function must be called with a 'prompt' parameter."
+        );
+      }
 
-// // Start writing functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
-// TODO: rate limit
-export const queryGPT3Completion =
-functions.runWith({secrets: ["OPENAI_API_KEY"]}).https.onCall(
-    async (data)=>{
-      console.log("started");
-      const configuration = new Configuration({
+      // Initialize OpenAI with the latest library
+      const openai = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY,
       });
-      const openai = new OpenAIApi(configuration);
-      const response = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: data.prompt,
-        temperature: 0.7,
-        max_tokens: 512,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0,
+
+      // Call OpenAI to generate a chat completion
+      const chatCompletion = await openai.chat.completions.create({
+        model: "gpt-4o-mini", // Replace with the desired model
+        messages: [{ role: "user", content: data.prompt }],
       });
-      console.log("finished");
-      return {text: response.data.choices[0].text};
+
+      // Extract the response content
+      const completionText = chatCompletion.choices[0]?.message?.content || "";
+      console.log("Function completed successfully");
+      return { text: completionText };
+    } catch (error) {
+      console.error("Error in queryGPTCompletion:", error);
+
+      // Handle errors gracefully
+      throw new functions.https.HttpsError(
+        "internal",
+        "An error occurred while processing your request."
+      );
     }
+  }
 );

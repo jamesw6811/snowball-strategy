@@ -16,7 +16,7 @@ const app = initializeApp(firebaseConfig);
 const functions = getFunctions(app);
 
 const runGPTCompletion = async (prompt) => {
-    const addMessage = httpsCallable(functions, 'queryGPT3Completion');
+    const addMessage = httpsCallable(functions, 'queryGPTCompletion');
     const result = await addMessage({ prompt: prompt });
     return result.data.text;
 }
